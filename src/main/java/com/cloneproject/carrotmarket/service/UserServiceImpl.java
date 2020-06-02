@@ -3,6 +3,8 @@ package com.cloneproject.carrotmarket.service;
 import com.cloneproject.carrotmarket.component.MailSenderCustom;
 import com.cloneproject.carrotmarket.model.User;
 import com.cloneproject.carrotmarket.repository.UserTableRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,8 +25,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> user(Long userId) throws Exception {
-        return userTableRepository.findById(userId);
+    public Optional userEmail(String email) throws Exception {
+        return userTableRepository.findByEmail(email);
     }
 
     @Override
@@ -65,7 +67,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User userMod(User user) throws Exception {
-        return null;
+
+        User origin_user = userTableRepository.findByNickName(user.getNickName());
+
+        if( origin_user == null)
+            return null;
+
+        if( !origin_user.equals(user) )
+            return null;
+
+        if( user.getEtc() != null)
+            origin_user.setEtc(user.getEtc());
+
+        userTableRepository.save(origin_user);
+
+        return origin_user;
     }
 
     @Override

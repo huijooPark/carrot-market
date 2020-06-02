@@ -4,9 +4,15 @@ import com.cloneproject.carrotmarket.component.GenerationCertNumber;
 import com.cloneproject.carrotmarket.model.User;
 import com.cloneproject.carrotmarket.repository.UserTableRepository;
 import com.cloneproject.carrotmarket.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +21,7 @@ import javax.persistence.Id;
 import java.util.*;
 
 @RestController
+@Api("UserController")
 @RequestMapping("/user")
 public class UserController {
 
@@ -28,8 +35,7 @@ public class UserController {
 
     @Resource
     private GenerationCertNumber generationCertNumber;
-
-    @GetMapping("/testUserCreate")
+    //    @GetMapping("/testUserCreate")
     public String testUserCreate(){
 //        userTableRepository.save( User.builder().nickName("test1").email("test1@gmail.com").build());
 //        userTableRepository.save( User.builder().nickName("test2").email("test2@gmail.com").build());
@@ -42,7 +48,8 @@ public class UserController {
         return "회원 초기데이터 생성";
     }
 
-    @GetMapping("")
+    @ApiOperation(value = "userList", notes = "회원 전체 List 조회")
+    @GetMapping("/userList")
     public List<User> userSearchAll(){
         try {
             logger.info("####### userSearchAll test ############");
@@ -53,10 +60,10 @@ public class UserController {
         return null;
     }
 
-    @GetMapping("/{usrId}")
-    public Optional userSearchId(@PathVariable("usrId") Long userId){
+    @GetMapping("/{email}")
+    public Optional userSearchId(@PathVariable("email") String email){
         try {
-            return userService.user(userId);
+            return userService.userEmail(email);
         }catch ( Exception e){
             e.printStackTrace();
         }
@@ -69,7 +76,8 @@ public class UserController {
 
 
     // 회원 가입
-    @PostMapping("")
+    @ApiOperation(value = "joinUser", notes = "회원 가입정보")
+    @PostMapping("/userReg")
     public Map joinUser(@RequestBody User user){
         logger.info("======== User Reg =========");
         logger.info("user info : "+user.toString());
@@ -106,6 +114,7 @@ public class UserController {
             user.setAuthKey(generationCertNumber.executeGenerate());
 
             userService.userReg(user);
+            user.setAuthKey(null);
 
             resultFlag = "S";
             resultMsg = "Success";
@@ -120,5 +129,27 @@ public class UserController {
         return map;
     }
 
-    //
+    @ApiOperation(value = "userInfoChange",notes = "회원정보 수정")
+    @PutMapping("/infoCh")
+    public ResponseEntity<User> userInfochange(@RequestBody User user){
+        logger.info("======== User change info =========");
+        logger.info("user info : "+user.toString());
+
+        try {
+
+            User updated_user = userService.userMod(user);
+
+            if(updated_user == null)
+                return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+
+            return new ResponseEntity<User>(updated_user,HttpStatus.OK);
+
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return new ResponseEntity<User>(HttpStatus.CONFLICT);
+        }
+
+    }
+
+
 }
