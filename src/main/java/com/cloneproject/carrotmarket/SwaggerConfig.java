@@ -22,21 +22,15 @@ public class SwaggerConfig {
 
     private String version;
     private String title;
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title(title)
-                .description("carrot-market user/sales API Docs.")
-                .build();
-    }
-
-
+    private String description;
     @Bean
     public Docket commonApi() {
 
-        version = "V0.1";
+        version = "v0.1";
         title = "Carrot-market-API" + version;
+        description = "Carrot-market 회원가입/중고거래 API Docs.";
 
+        // error response 공통 설정
         List<ResponseMessage> responseMessages = new ArrayList<>();
         responseMessages.add(new ResponseMessageBuilder()
                 .code(200)
@@ -56,11 +50,24 @@ public class SwaggerConfig {
                 .groupName(version)
                 .apiInfo(this.apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors
-                    .basePackage("com.cloneproject.carrotmarket.controller"))
-                .paths(PathSelectors.ant("/**"))
+                .apis(RequestHandlerSelectors.basePackage("com.cloneproject.carrotmarket.controller")) // 지정된 패키지만 API 문서화
+                //.apis(RequestHandlerSelectors.any()) // 전체 문서의 API 화
+                .paths(PathSelectors.ant("/api/**")) // 특정경로에 있는 컨트롤러만 포함
+                //.paths(PathSelectors.any()) // 모든 URL 패턴에 대해 문서화 수행
                 .build()
                 .globalResponseMessage(RequestMethod.GET, responseMessages);
+    }
+
+    // 문서 커스텀 하기..
+    private ApiInfo apiInfo() {
+
+        String version_name = "Simple Docs." + version;
+
+        return new ApiInfoBuilder()
+                .title(title)
+                .description(description)
+                .version(version_name)
+                .build();
     }
 
 }
