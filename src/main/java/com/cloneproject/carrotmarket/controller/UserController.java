@@ -4,10 +4,7 @@ import com.cloneproject.carrotmarket.component.GenerationCertNumber;
 import com.cloneproject.carrotmarket.model.User;
 import com.cloneproject.carrotmarket.repository.UserTableRepository;
 import com.cloneproject.carrotmarket.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +18,8 @@ import javax.persistence.Id;
 import java.util.*;
 
 @RestController
-@Api("UserController")
-@RequestMapping("/user")
+@Api()
+@RequestMapping("/api/user")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -35,18 +32,6 @@ public class UserController {
 
     @Resource
     private GenerationCertNumber generationCertNumber;
-    //    @GetMapping("/testUserCreate")
-    public String testUserCreate(){
-//        userTableRepository.save( User.builder().nickName("test1").email("test1@gmail.com").build());
-//        userTableRepository.save( User.builder().nickName("test2").email("test2@gmail.com").build());
-//        userTableRepository.save( User.builder().nickName("test3").email("test3@gmail.com").build());
-//        userTableRepository.save( User.builder().nickName("test4").email("test4@gmail.com").build());
-//        userTableRepository.save( User.builder().nickName("test5").email("test5@gmail.com").build());
-//        userTableRepository.save( User.builder().nickName("test6").email("test6@gmail.com").build());
-//        userTableRepository.save( User.builder().nickName("test7").email("test7@gmail.com").build());
-
-        return "회원 초기데이터 생성";
-    }
 
     @ApiOperation(value = "userList", notes = "회원 전체 List 조회")
     @GetMapping("/userList")
@@ -61,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping("/{email}")
-    public Optional userSearchId(@PathVariable("email") String email){
+    public Optional userSearchId(@ApiParam(value = "사용자의 email 주소", required = true) @PathVariable("email") String email){
         try {
             return userService.userEmail(email);
         }catch ( Exception e){
