@@ -3,6 +3,8 @@ package com.cloneproject.carrotmarket.service;
 import com.cloneproject.carrotmarket.component.MailSenderCustom;
 import com.cloneproject.carrotmarket.model.User;
 import com.cloneproject.carrotmarket.repository.UserTableRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Resource
     private MailSenderCustom mailSenderCustom;
 
@@ -21,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> usersAll()  throws Exception {
+        logger.trace("Trace Level 테스트"); logger.debug("DEBUG Level 테스트"); logger.info("INFO Level 테스트"); logger.warn("Warn Level 테스트"); logger.error("ERROR Level 테스트");
+
+
         return userTableRepository.findAll();
     }
 

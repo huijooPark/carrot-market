@@ -16,6 +16,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+* ################## API Docs. 자동화 설정 #####################
+* */
+
 @EnableSwagger2
 @Configuration
 public class SwaggerConfig {

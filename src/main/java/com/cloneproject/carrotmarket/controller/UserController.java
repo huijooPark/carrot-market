@@ -37,6 +37,9 @@ public class UserController {
     @GetMapping("/userList")
     public List<User> userSearchAll(){
         try {
+            logger.trace("Trace Level 테스트"); logger.debug("DEBUG Level 테스트"); logger.info("INFO Level 테스트"); logger.warn("Warn Level 테스트"); logger.error("ERROR Level 테스트");
+
+
             logger.info("####### userSearchAll test ############");
             return userService.usersAll();
         } catch (Exception e) {
