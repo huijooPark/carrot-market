@@ -23,6 +23,7 @@ public class MailSenderCustom {
     @Value("${spring.mail.username}")
     String from_email;
 
+
     /* =========== MimeMessageHelper 관련 Method =============
      * setFrom(String from)  발신자 설정
      * setReplyTo(String replyTo)  응답 주소 설정

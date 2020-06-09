@@ -33,4 +33,7 @@ out/
 
 
 ### server setting ###
-mailserver.properties
+src/main/resources/mailserver.properties
+
+### log ###
+log/
