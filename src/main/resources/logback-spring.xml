@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- logback-spring.xml파일이 있으면 Boot가 설정파일을 읽어감.
+     logback-spring.xml파일이 없다면 .properties(.yml)파일의 설정을 보게됨. -->
+
 <!-- 60초마다 설정 파일(logback-spring.xml)의 변경을 확인 하여 변경시 갱신 -->
 <configuration scan="true" scanPeriod="60 seconds">
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
