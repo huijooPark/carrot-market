@@ -18,7 +18,7 @@ public class CarrotMarketApplication {
 
 		SpringApplication.run(CarrotMarketApplication.class, args);
 		String strClassPath = System.getProperty("java.class.path");
-		System.out.println("strClassPath: "+strClassPath);
+		//System.out.println("strClassPath: "+strClassPath);
 		System.out.println("################################################################################");
 		System.out.println("################################################################################");
 		System.out.println("################# Carrot Market RESTful API SERVER Started !! ##################");
