@@ -13,7 +13,9 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+	jcenter()
 }
+
 
 ext {
 	set('snippetsDir', file("build/generated-snippets"))
