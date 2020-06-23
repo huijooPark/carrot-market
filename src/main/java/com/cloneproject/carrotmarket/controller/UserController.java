@@ -1,20 +1,18 @@
 package com.cloneproject.carrotmarket.controller;
 
 import com.cloneproject.carrotmarket.component.GenerationCertNumber;
-import com.cloneproject.carrotmarket.model.User;
-import com.cloneproject.carrotmarket.repository.UserTableRepository;
+import com.cloneproject.carrotmarket.controller.dto.UserSaveRequestDto;
+import com.cloneproject.carrotmarket.domain.user.User;
+import com.cloneproject.carrotmarket.domain.user.UserRepository;
 import com.cloneproject.carrotmarket.service.UserService;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.persistence.Id;
 import java.util.*;
 
 @RestController
@@ -28,20 +26,24 @@ public class UserController {
     private UserService userService;
 
     @Resource
-    private UserTableRepository userTableRepository;
+    private UserRepository userTableRepository;
 
     @Resource
     private GenerationCertNumber generationCertNumber;
 
     @ApiOperation(value = "userList", notes = "회원 전체 List 조회")
     @GetMapping("/userList")
-    public List<User> userSearchAll(){
+    public String userSearchAll(){
         try {
-            logger.trace("Trace Level 테스트"); logger.debug("DEBUG Level 테스트"); logger.info("INFO Level 테스트"); logger.warn("Warn Level 테스트"); logger.error("ERROR Level 테스트");
+            logger.trace("Trace Level 테스트");
+            logger.debug("DEBUG Level 테스트");
+            logger.info("INFO Level 테스트");
+            logger.warn("Warn Level 테스트");
+            logger.error("ERROR Level 테스트");
 
 
             logger.info("####### userSearchAll test ############");
-            return userService.usersAll();
+            return "hello"; //userService.usersAll();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,9 +68,9 @@ public class UserController {
     // 회원 가입
     @ApiOperation(value = "joinUser", notes = "회원 가입정보")
     @PostMapping("/userReg")
-    public Map joinUser(@RequestBody User user){
+    public Map joinUser(@RequestBody UserSaveRequestDto userSaveRequestDto){
         logger.info("======== User Reg =========");
-        logger.info("user info : "+user.toString());
+        logger.info("user info : "+userSaveRequestDto.toString());
 
         /*
         * 필수값 및 중복 체크 로직은?
@@ -80,7 +82,7 @@ public class UserController {
         String resultMsg = "Error";
 
         try {
-            if ( userTableRepository.existsByEmail(user.getEmail())){
+            if ( userTableRepository.existsByEmail(userSaveRequestDto.getEmail())){
                 resultFlag = "D";
                 resultMsg = "Email_Dup";
                 map.put("result_code", resultFlag);
@@ -89,7 +91,7 @@ public class UserController {
                 return map;
             }
 
-            if ( userTableRepository.existsByNickName(user.getNickName())){
+            if ( userTableRepository.existsByNickName(userSaveRequestDto.getNickName())){
                 resultFlag = "D";
                 resultMsg = "NickName_Dup";
                 map.put("result_code", resultFlag);
@@ -99,10 +101,9 @@ public class UserController {
             }
 
             // 이메일 인증 키
-            user.setAuthKey(generationCertNumber.executeGenerate());
+            userSaveRequestDto.genAuthKey(generationCertNumber.executeGenerate());
 
-            userService.userReg(user);
-            user.setAuthKey(null);
+            map.put("user", userService.join(userSaveRequestDto));
 
             resultFlag = "S";
             resultMsg = "Success";
@@ -110,7 +111,6 @@ public class UserController {
             e.printStackTrace();
         }
 
-        map.put("return_object", user);
         map.put("result_code", resultFlag);
         map.put("result_msg", resultMsg);
 

@@ -1,28 +1,28 @@
 package com.cloneproject.carrotmarket.service;
 
 import com.cloneproject.carrotmarket.component.MailSenderCustom;
-import com.cloneproject.carrotmarket.model.User;
-import com.cloneproject.carrotmarket.repository.UserTableRepository;
+import com.cloneproject.carrotmarket.controller.dto.UserSaveRequestDto;
+import com.cloneproject.carrotmarket.domain.user.User;
+import com.cloneproject.carrotmarket.domain.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
 
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Resource
-    private MailSenderCustom mailSenderCustom;
+    private final MailSenderCustom mailSenderCustom;
 
-    @Resource
-    private UserTableRepository userTableRepository;
+    private final UserRepository userTableRepository;
 
+    @Transactional
     @Override
     public List<User> usersAll()  throws Exception {
         logger.trace("Trace Level 테스트"); logger.debug("DEBUG Level 테스트"); logger.info("INFO Level 테스트"); logger.warn("Warn Level 테스트"); logger.error("ERROR Level 테스트");
@@ -31,16 +31,18 @@ public class UserServiceImpl implements UserService {
         return userTableRepository.findAll();
     }
 
+    @Transactional
     @Override
     public Optional userEmail(String email) throws Exception {
         return userTableRepository.findByEmail(email);
     }
 
+    @Transactional
     @Override
-    public User userReg(User user) throws Exception {
-        userTableRepository.save(user);
+    public User join(UserSaveRequestDto userSaveRequestDto) throws Exception {
 
         Map<String,Object> sendInfo = new HashMap<>();
+        User user = userTableRepository.save(userSaveRequestDto.toEntity());
 
         sendInfo.put("subject", "[당근마켓] 회원 가입 인증 메일");
         sendInfo.put("msg", new StringBuilder().append("<h3>안녕하세요.^^ "+ user.getNickName() + "님.</h3>")
@@ -59,12 +61,10 @@ public class UserServiceImpl implements UserService {
 
         mailSenderCustom.sendEmailSimple(sendInfo);
 
-        // response tl 인증번호 제외..
-        user.setAuthKey("");
-
         return user;
     }
 
+    @Transactional
     @Override
     public User userConfirm(User user) throws Exception {
 
@@ -72,6 +72,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Transactional
     @Override
     public User userMod(User user) throws Exception {
 
@@ -84,13 +85,14 @@ public class UserServiceImpl implements UserService {
             return null;
 
         if( user.getEtc() != null)
-            origin_user.setEtc(user.getEtc());
+            //origin_user.setEtc(user.getEtc());
 
         userTableRepository.save(origin_user);
 
         return origin_user;
     }
 
+    @Transactional
     @Override
     public String userDel(String userId) throws Exception {
         return null;
