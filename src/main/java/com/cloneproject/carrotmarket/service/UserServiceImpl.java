@@ -37,29 +37,39 @@ public class UserServiceImpl implements UserService {
         return userTableRepository.findByEmail(email);
     }
 
+    @Override
+    public boolean existsByEmail(String email) throws Exception {
+        return userTableRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByNickName(String nickName) throws Exception {
+        return userTableRepository.existsByNickName(nickName);
+    }
+
     @Transactional
     @Override
     public User join(UserSaveRequestDto userSaveRequestDto) throws Exception {
 
         Map<String,Object> sendInfo = new HashMap<>();
         User user = userTableRepository.save(userSaveRequestDto.toEntity());
-
-        sendInfo.put("subject", "[당근마켓] 회원 가입 인증 메일");
-        sendInfo.put("msg", new StringBuilder().append("<h3>안녕하세요.^^ "+ user.getNickName() + "님.</h3>")
-                                               .append("<h3>당근 마켓 회원 가입 인증 메일 입니다.</h3>")
-                                               .append("<h3>회원 가입 인증 번호 입니다</h3>")
-                                               .append("<div style=\"background-color: lightgray; width: fit-content;\">")
-                                               .append("<p style=\"align-items: center ;  font-size: 25px; color: red;\">"+user.getAuthKey()+"</p>")
-                                               .append("</div>")
-                                               .append("<h3>인증 번호를 복사하거나,</h3>")
-                                               .append("<h3><a href=\"www.naver.com\">여기를 눌러 회원가입을 완료 하세요.</a></h3>")
-                                               .toString());
-
-        // sendInfo.put("fromAddress","");
-        sendInfo.put("toAddress",user.getEmail());
-        sendInfo.put("fromName","carrot-market");
-
-        mailSenderCustom.sendEmailSimple(sendInfo);
+//
+//        sendInfo.put("subject", "[당근마켓] 회원 가입 인증 메일");
+//        sendInfo.put("msg", new StringBuilder().append("<h3>안녕하세요.^^ "+ user.getNickName() + "님.</h3>")
+//                                               .append("<h3>당근 마켓 회원 가입 인증 메일 입니다.</h3>")
+//                                               .append("<h3>회원 가입 인증 번호 입니다</h3>")
+//                                               .append("<div style=\"background-color: lightgray; width: fit-content;\">")
+//                                               .append("<p style=\"align-items: center ;  font-size: 25px; color: red;\">"+user.getAuthKey()+"</p>")
+//                                               .append("</div>")
+//                                               .append("<h3>인증 번호를 복사하거나,</h3>")
+//                                               .append("<h3><a href=\"www.naver.com\">여기를 눌러 회원가입을 완료 하세요.</a></h3>")
+//                                               .toString());
+//
+//        // sendInfo.put("fromAddress","");
+//        sendInfo.put("toAddress",user.getEmail());
+//        sendInfo.put("fromName","carrot-market");
+//
+//        mailSenderCustom.sendEmailSimple(sendInfo);
 
         return user;
     }

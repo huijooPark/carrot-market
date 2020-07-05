@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@Api(value = "TradeController" )
+@Api(value = "TradeController")
 @RequestMapping(value = "/api/trade")
 public class TradeController {
 
     private static final Logger logger = LoggerFactory.getLogger(TradeController.class);
 
 
-    @ApiOperation(value = "tradeListSearch", notes = "중고거래 List 조회")
+    @ApiOperation(value = "tradeListSearch", notes = "중고거래 List 조회(미완료)")
     @GetMapping("/tradeList")
     public String tradeListSearch(){
-        return "trade";
+        return "개발중...";
     }
 
 
